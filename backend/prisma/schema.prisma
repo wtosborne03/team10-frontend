@@ -9,9 +9,113 @@ generator client {
 }
 
 model User {
+  id             Int        @id @default(autoincrement())
+  email          String     @unique
+  name           String
+  passwordHash   String // Encrypted password
+  role           String     @default("driver") // Can be "driver", "sponsor", or "admin"
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  driverProfile  Driver?
+  sponsorProfile Sponsor?
+  sponsorId      Int?
+  adminProfile   Admin?
+  adminId        Int?
+  auditLogs      AuditLog[]
+}
+
+model Driver {
+  id           Int                 @id @default(autoincrement())
+  userId       Int                 @unique
+  user         User                @relation(fields: [userId], references: [id])
+  sponsorId    Int
+  sponsor      Sponsor             @relation(fields: [sponsorId], references: [id])
+  points       Int                 @default(0)
+  pointLogs    PointLog[]
+  purchases    Purchase[]
+  applications DriverApplication[]
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+}
+
+model Sponsor {
+  id                Int                 @id @default(autoincrement())
+  userId            Int                 @unique
+  user              User                @relation(fields: [userId], references: [id])
+  drivers           Driver[]
+  productCatalogs   ProductCatalog[]
+  pointLogs         PointLog[]
+  purchases         Purchase[]
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  DriverApplication DriverApplication[]
+}
+
+model Admin {
   id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String
-  role      String   @default("driver")
+  userId    Int      @unique
+  user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ProductCatalog {
+  id           Int        @id @default(autoincrement())
+  sponsorId    Int
+  sponsor      Sponsor    @relation(fields: [sponsorId], references: [id])
+  productId    String
+  name         String
+  description  String?
+  price        Float
+  availability Boolean
+  imageUrl     String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  Purchase     Purchase[]
+}
+
+model Purchase {
+  id         Int            @id @default(autoincrement())
+  driverId   Int
+  driver     Driver         @relation(fields: [driverId], references: [id])
+  productId  Int
+  product    ProductCatalog @relation(fields: [productId], references: [id])
+  pointsUsed Int
+  status     String         @default("pending")
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+  Sponsor    Sponsor?       @relation(fields: [sponsorId], references: [id])
+  sponsorId  Int?
+}
+
+model PointLog {
+  id            Int      @id @default(autoincrement())
+  driverId      Int
+  driver        Driver   @relation(fields: [driverId], references: [id])
+  sponsorId     Int
+  sponsor       Sponsor  @relation(fields: [sponsorId], references: [id])
+  pointsChanged Int
+  reason        String
+  createdAt     DateTime @default(now())
+}
+
+model DriverApplication {
+  id        Int      @id @default(autoincrement())
+  driverId  Int
+  driver    Driver   @relation(fields: [driverId], references: [id])
+  sponsorId Int
+  sponsor   Sponsor  @relation(fields: [sponsorId], references: [id])
+  status    String   @default("pending") // Can be "pending", "approved", "rejected"
+  reason    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AuditLog {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id])
+  actionType String //for examle: "login", "password_change", "point_change", "driver_application"
+  details    String?
+  createdAt  DateTime @default(now())
 }
