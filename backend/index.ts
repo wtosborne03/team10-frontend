@@ -58,6 +58,16 @@ app.delete('/api/users/:id', async (req, res) => {
   }
 });
 
+app.get('/api/about', async (req,res) => {
+  try {
+    const info = await prisma.about.findMany();
+    res.json(info);
+  } catch (error) {
+    console.error('Error getting About Page info: ', error);
+    res.status(500).json({ error: 'Failed to get About Page info' });
+  }
+})
+
 const PORT = 3001;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

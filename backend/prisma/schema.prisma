@@ -49,6 +49,7 @@ model Sponsor {
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
   DriverApplication DriverApplication[]
+  SponsorConfig     SponsorConfig?
 }
 
 model Admin {
@@ -72,7 +73,7 @@ model ProductCatalog {
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
   Purchase     Purchase[]
-  category     String 
+  category     String
 }
 
 model Purchase {
@@ -122,12 +123,20 @@ model AuditLog {
 }
 
 model SponsorConfig {
-  id          Int      @id @default(autoincrement())
-  sponsorId   Int      @unique
-  sponsor     Sponsor  @relation(fields: [sponsorId], references: [id])
-  pointValue  Float    @default(0.01) // $0.01 default per point
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         Int      @id @default(autoincrement())
+  sponsorId  Int      @unique
+  sponsor    Sponsor  @relation(fields: [sponsorId], references: [id])
+  pointValue Float    @default(0.01) // $0.01 default per point
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model About {
+  id           Int    @id @default(autoincrement())
+  sprintNumber Int
+  teamNumber   Int
+  teamName     String
+  chosenTech   String
 }
 
 enum PurchaseStatus {
@@ -142,3 +151,7 @@ enum ApplicationStatus {
   APPROVED
   REJECTED
 }
+
+
+
+
