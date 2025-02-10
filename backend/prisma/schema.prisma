@@ -49,6 +49,7 @@ model Sponsor {
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
   DriverApplication DriverApplication[]
+  config            SponsorConfig?
 }
 
 model Admin {
