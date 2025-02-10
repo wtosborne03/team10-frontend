@@ -1,69 +1,67 @@
-// backend/prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-}
-
-generator client {
-  provider = "prisma-client-js"
 }
 
 model User {
   id             Int        @id @default(autoincrement())
   email          String     @unique
   name           String
-  passwordHash   String // Encrypted password
-  role           String     @default("driver") // Can be "driver", "sponsor", or "admin"
+  passwordHash   String
+  role           String     @default("driver")
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
+  sponsorId      Int?
+  adminId        Int?
+  adminProfile   Admin?
+  auditLogs      AuditLog[]
   driverProfile  Driver?
   sponsorProfile Sponsor?
-  sponsorId      Int?
-  adminProfile   Admin?
-  adminId        Int?
-  auditLogs      AuditLog[]
 }
 
 model Driver {
   id           Int                 @id @default(autoincrement())
   userId       Int                 @unique
-  user         User                @relation(fields: [userId], references: [id])
   sponsorId    Int
-  sponsor      Sponsor             @relation(fields: [sponsorId], references: [id])
   points       Int                 @default(0)
-  pointLogs    PointLog[]
-  purchases    Purchase[]
-  applications DriverApplication[]
   createdAt    DateTime            @default(now())
   updatedAt    DateTime            @updatedAt
+  sponsor      Sponsor             @relation(fields: [sponsorId], references: [id])
+  user         User                @relation(fields: [userId], references: [id])
+  applications DriverApplication[]
+  pointLogs    PointLog[]
+  purchases    Purchase[]
 }
 
 model Sponsor {
   id                Int                 @id @default(autoincrement())
   userId            Int                 @unique
-  user              User                @relation(fields: [userId], references: [id])
-  drivers           Driver[]
-  productCatalogs   ProductCatalog[]
-  pointLogs         PointLog[]
-  purchases         Purchase[]
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
+  drivers           Driver[]
   DriverApplication DriverApplication[]
+  pointLogs         PointLog[]
+  productCatalogs   ProductCatalog[]
+  purchases         Purchase[]
+  user              User                @relation(fields: [userId], references: [id])
   config            SponsorConfig?
 }
 
 model Admin {
   id        Int      @id @default(autoincrement())
   userId    Int      @unique
-  user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model ProductCatalog {
   id           Int        @id @default(autoincrement())
   sponsorId    Int
-  sponsor      Sponsor    @relation(fields: [sponsorId], references: [id])
   productId    String
   name         String
   description  String?
@@ -72,63 +70,72 @@ model ProductCatalog {
   imageUrl     String?
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
+  category     String
+  sponsor      Sponsor    @relation(fields: [sponsorId], references: [id])
   Purchase     Purchase[]
-  category     String 
 }
 
 model Purchase {
   id         Int            @id @default(autoincrement())
   driverId   Int
-  driver     Driver         @relation(fields: [driverId], references: [id])
   productId  Int
-  product    ProductCatalog @relation(fields: [productId], references: [id])
   pointsUsed Int
   status     String         @default("pending")
   createdAt  DateTime       @default(now())
   updatedAt  DateTime       @updatedAt
-  Sponsor    Sponsor?       @relation(fields: [sponsorId], references: [id])
   sponsorId  Int?
+  driver     Driver         @relation(fields: [driverId], references: [id])
+  product    ProductCatalog @relation(fields: [productId], references: [id])
+  Sponsor    Sponsor?       @relation(fields: [sponsorId], references: [id])
 }
 
 model PointLog {
   id            Int      @id @default(autoincrement())
   driverId      Int
-  driver        Driver   @relation(fields: [driverId], references: [id])
   sponsorId     Int
-  sponsor       Sponsor  @relation(fields: [sponsorId], references: [id])
   pointsChanged Int
   reason        String
   createdAt     DateTime @default(now())
+  driver        Driver   @relation(fields: [driverId], references: [id])
+  sponsor       Sponsor  @relation(fields: [sponsorId], references: [id])
 }
 
 model DriverApplication {
   id        Int      @id @default(autoincrement())
   driverId  Int
-  driver    Driver   @relation(fields: [driverId], references: [id])
   sponsorId Int
-  sponsor   Sponsor  @relation(fields: [sponsorId], references: [id])
-  status    String   @default("pending") // Can be "pending", "approved", "rejected"
+  status    String   @default("pending")
   reason    String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  driver    Driver   @relation(fields: [driverId], references: [id])
+  sponsor   Sponsor  @relation(fields: [sponsorId], references: [id])
 }
 
 model AuditLog {
   id         Int      @id @default(autoincrement())
   userId     Int
-  user       User     @relation(fields: [userId], references: [id])
-  actionType String //for examle: "login", "password_change", "point_change", "driver_application"
+  actionType String
   details    String?
   createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
 }
 
 model SponsorConfig {
-  id          Int      @id @default(autoincrement())
-  sponsorId   Int      @unique
-  sponsor     Sponsor  @relation(fields: [sponsorId], references: [id])
-  pointValue  Float    @default(0.01) // $0.01 default per point
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         Int      @id @default(autoincrement())
+  sponsorId  Int      @unique
+  pointValue Float    @default(0.01)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  sponsor    Sponsor  @relation(fields: [sponsorId], references: [id])
+}
+
+model About {
+  id           Int    @id @default(autoincrement())
+  sprintNumber Int
+  teamNumber   Int
+  teamName     String
+  chosenTech   String
 }
 
 enum PurchaseStatus {

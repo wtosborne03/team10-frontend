@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Card, CardContent } from '../components/ui/card';
-import { ArrowRight, Shield, Truck, Award, BarChart, Gift, Users } from 'lucide-react';
+import { ArrowRight, Shield, Truck, Award, BarChart, Gift, Users, Menu, X, Info } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function Home() {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     setIsLoaded(true);
@@ -11,6 +12,33 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex flex-col items-center justify-start p-4 relative overflow-hidden">
+      {/* Menu Button */}
+      <div className="absolute top-4 right-4 z-50">
+        <button
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          className="p-2 rounded-full bg-slate-800/50 border border-slate-700 hover:bg-slate-700/50 transition-colors"
+        >
+          {isMenuOpen ? (
+            <X className="h-6 w-6 text-white" />
+          ) : (
+            <Menu className="h-6 w-6 text-white" />
+          )}
+        </button>
+
+        {/* Dropdown Menu */}
+        {isMenuOpen && (
+          <div className="absolute right-0 mt-2 w-48 rounded-lg bg-slate-800 border border-slate-700 shadow-lg py-1 animate-fadeIn">
+            <Link
+              to="/about"
+              className="flex items-center px-4 py-2 text-gray-300 hover:bg-slate-700/50 transition-colors"
+            >
+              <Info className="h-4 w-4 mr-2" />
+              About Us
+            </Link>
+          </div>
+        )}
+      </div>
+
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute w-96 h-96 bg-blue-500/10 rounded-full blur-3xl -top-48 -left-48 animate-pulse"></div>
@@ -21,10 +49,9 @@ export default function Home() {
         {/* Hero Section */}
         <div className="space-y-6 pt-12">
           <h1 className="text-6xl font-bold text-white tracking-tight">
-            Driver Incentive Program
+            Good (Truck) Driver Incentive Program
           </h1>
           <p className="text-2xl text-gray-300">
-            Elevating Professional Driving Through Recognition and Incentives
           </p>
         </div>
 
@@ -60,7 +87,6 @@ export default function Home() {
             </div>
           </div>
         </div>
-
 
         {/* User Types Section */}
         <div className="space-y-8 pt-12">
@@ -103,18 +129,18 @@ export default function Home() {
 
         {/* CTA Section */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center pt-12 pb-8">
-          <a 
-            href="/login" 
+          <Link 
+            to="/login" 
             className="px-8 py-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-blue-500/50 flex items-center justify-center"
           >
             Sign In <ArrowRight className="ml-2 h-5 w-5" />
-          </a>
-          <a 
-            href="/register" 
+          </Link>
+          <Link 
+            to="/register" 
             className="px-8 py-4 bg-transparent border-2 border-blue-400 text-blue-400 rounded-lg hover:bg-blue-400/10 transition-all duration-300 transform hover:scale-105 flex items-center justify-center"
           >
             Create Account <ArrowRight className="ml-2 h-5 w-5" />
-          </a>
+          </Link>
         </div>
       </div>
     </main>
