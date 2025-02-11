@@ -59,30 +59,30 @@ export default function Home() {
         <div className="grid md:grid-cols-3 gap-6 px-4">
           <div className="bg-slate-800/50 border-slate-700 rounded-lg shadow-lg p-4">
             <div className="p-6 space-y-4">
-              <div className="h-12 w-12 rounded-lg bg-blue-500/10 flex items-center justify-center">
-                <Truck className="h-6 w-6 text-blue-400" />
+              <div className="w-full flex items-center justify-center gap-3">
+                <Truck className="h-12 w-12 rounded-lg text-blue-400 bg-blue-500/10 p-3" />
+                <h3 className="text-xl font-semibold text-white">Driver Performance</h3>
               </div>
-              <h3 className="text-xl font-semibold text-white">Driver Performance</h3>
               <p className="text-gray-400">Track and reward excellent driving behavior with our comprehensive point system</p>
             </div>
           </div>
 
           <div className="bg-slate-800/50 border-slate-700 rounded-lg shadow-lg p-4">
             <div className="p-6 space-y-4">
-              <div className="h-12 w-12 rounded-lg bg-blue-500/10 flex items-center justify-center">
-                <Gift className="h-6 w-6 text-blue-400" />
+              <div className="w-full flex items-center justify-center gap-3">
+                <Gift className="h-12 w-12 rounded-lg text-blue-400 bg-blue-500/10 p-3" />
+                <h3 className="text-xl font-semibold text-white">Exclusive Rewards</h3>
               </div>
-              <h3 className="text-xl font-semibold text-white">Exclusive Rewards</h3>
               <p className="text-gray-400">Redeem points for products through sponsor-specific catalogs updated in real-time</p>
             </div>
           </div>
 
           <div className="bg-slate-800/50 border-slate-700 rounded-lg shadow-lg p-4">
             <div className="p-6 space-y-4">
-              <div className="h-12 w-12 rounded-lg bg-blue-500/10 flex items-center justify-center">
-                <Shield className="h-6 w-6 text-blue-400" />
+              <div className="w-full flex items-center justify-center gap-3">
+                <Shield className="h-12 w-12 rounded-lg text-blue-400 bg-blue-500/10 p-3" />
+                <h3 className="text-xl font-semibold text-white">Secure Platform</h3>
               </div>
-              <h3 className="text-xl font-semibold text-white">Secure Platform</h3>
               <p className="text-gray-400">Enterprise-grade security with encrypted data and comprehensive audit logging</p>
             </div>
           </div>
@@ -93,8 +93,10 @@ export default function Home() {
           <h2 className="text-3xl font-bold text-white">Who Can Participate?</h2>
           <div className="grid md:grid-cols-3 gap-6 px-4">
             <div className="p-6 bg-slate-800/30 rounded-lg border border-slate-700">
-              <Users className="h-8 w-8 text-blue-400 mb-4" />
-              <h3 className="text-xl font-semibold text-white mb-2">Drivers</h3>
+              <div className="w-full mb-3 flex items-center justify-center gap-3">
+                <Users className="h-8 w-8 text-blue-400" />
+                <h3 className="text-xl font-semibold text-white">Drivers</h3>
+              </div>
               <ul className="text-left text-gray-400 space-y-2">
                 <li>• Earn points for good driving</li>
                 <li>• Browse reward catalogs</li>
@@ -104,8 +106,10 @@ export default function Home() {
             </div>
 
             <div className="p-6 bg-slate-800/30 rounded-lg border border-slate-700">
-              <Award className="h-8 w-8 text-blue-400 mb-4" />
-              <h3 className="text-xl font-semibold text-white mb-2">Sponsors</h3>
+              <div className="w-full mb-3 flex items-center justify-center gap-3">
+                <Award className="h-8 w-8 text-blue-400" />
+                <h3 className="text-xl font-semibold text-white">Sponsors</h3>
+              </div>
               <ul className="text-left text-gray-400 space-y-2">
                 <li>• Manage driver programs</li>
                 <li>• Customize reward catalogs</li>
@@ -115,8 +119,10 @@ export default function Home() {
             </div>
 
             <div className="p-6 bg-slate-800/30 rounded-lg border border-slate-700">
-              <BarChart className="h-8 w-8 text-blue-400 mb-4" />
-              <h3 className="text-xl font-semibold text-white mb-2">Administrators</h3>
+              <div className="w-full mb-3 flex items-center justify-center gap-3">
+                <BarChart className="h-8 w-8 text-blue-400" />
+                <h3 className="text-xl font-semibold text-white">Administrators</h3>
+              </div>
               <ul className="text-left text-gray-400 space-y-2">
                 <li>• System management</li>
                 <li>• User administration</li>
@@ -129,14 +135,14 @@ export default function Home() {
 
         {/* CTA Section */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center pt-12 pb-8">
-          <Link 
-            to="/login" 
+          <Link
+            to="/login"
             className="px-8 py-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-blue-500/50 flex items-center justify-center"
           >
             Sign In <ArrowRight className="ml-2 h-5 w-5" />
           </Link>
-          <Link 
-            to="/register" 
+          <Link
+            to="/register"
             className="px-8 py-4 bg-transparent border-2 border-blue-400 text-blue-400 rounded-lg hover:bg-blue-400/10 transition-all duration-300 transform hover:scale-105 flex items-center justify-center"
           >
             Create Account <ArrowRight className="ml-2 h-5 w-5" />
