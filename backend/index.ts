@@ -3,6 +3,7 @@ import express from 'express';
 import * as bcrypt from 'bcrypt';
 import { PrismaClient } from '@prisma/client';
 import cors from 'cors';
+import { register, login } from './api/auth'; // Import the auth functions
 
 const prisma = new PrismaClient();
 const app = express();
@@ -24,6 +25,9 @@ app.get('/api/users', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch users' });
   }
 });
+
+app.post('/api/register', register);
+app.post('/api/login', login);
 
 app.post('/api/users', async (req, res) => {
   try {
@@ -59,7 +63,6 @@ app.delete('/api/users/:id', async (req, res) => {
     res.status(500).json({ error: 'Failed to delete user' });
   }
 });
-
 
 const PORT = 3001;
 app.listen(PORT, () => {

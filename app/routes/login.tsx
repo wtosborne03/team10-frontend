@@ -1,29 +1,41 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, KeyRound, Mail, AlertTriangle, ArrowLeft } from 'lucide-react';
+import axios from '../api/axiosConfig';
 
 interface FormEvent extends React.FormEvent<HTMLFormElement> {
-    preventDefault(): void;
-  }
-  
-  export default function LoginPage() {
-    const [isLoading, setIsLoading] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
-    const [loginAttempt, setLoginAttempt] = useState({ error: false, message: '' });
-  
-    const handleLogin = async (e: FormEvent) => {
-      e.preventDefault();
-      setIsLoading(true);
-      // Simulated login delay
-      setTimeout(() => {
-        setIsLoading(false);
-        // Add actual login logic here
-        setLoginAttempt({
-          error: true,
-          message: 'Invalid credentials. Please try again.'
-        });
-      }, 1000);
-    };
+  preventDefault(): void;
+}
+
+export default function LoginPage() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [loginAttempt, setLoginAttempt] = useState({ error: false, message: '' });
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const navigate = useNavigate();
+
+  const handleLogin = async (e: FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const response = await axios.post('/login', { email, password });
+      setIsLoading(false);
+      localStorage.setItem('token', response.data.token);
+      navigate('/');
+
+      // Handle successful login, e.g., store token, redirect, etc.
+    } catch (error) {
+      console.error(error);
+      setIsLoading(false);
+      setLoginAttempt({
+        error: true,
+        message: 'Invalid credentials. Please try again.'
+      });
+    }
+  };
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex flex-col items-center justify-center p-4 relative overflow-hidden">
@@ -35,8 +47,8 @@ interface FormEvent extends React.FormEvent<HTMLFormElement> {
 
       <div className="w-full max-w-md p-4 relative z-10">
         {/* Back to home link */}
-        <Link 
-          to="/" 
+        <Link
+          to="/"
           className="inline-flex items-center text-gray-400 hover:text-white mb-6 transition-colors"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
@@ -69,6 +81,8 @@ interface FormEvent extends React.FormEvent<HTMLFormElement> {
                   type="email"
                   placeholder="Email"
                   required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-10 p-3 bg-slate-900/50 border border-slate-700 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-blue-500"
                 />
               </div>
@@ -81,6 +95,8 @@ interface FormEvent extends React.FormEvent<HTMLFormElement> {
                   type={showPassword ? "text" : "password"}
                   placeholder="Password"
                   required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-10 pr-10 p-3 bg-slate-900/50 border border-slate-700 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-blue-500"
                 />
                 <button

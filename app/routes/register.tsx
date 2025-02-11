@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, KeyRound, Mail, AlertTriangle, ArrowLeft, User, Building2, Phone, Truck, Award, Shield } from 'lucide-react';
+import axios from '../api/axiosConfig';
 
 interface FormEvent extends React.FormEvent<HTMLFormElement> {
   preventDefault(): void;
@@ -14,18 +15,46 @@ export default function RegisterPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
   const [registerAttempt, setRegisterAttempt] = useState({ error: false, message: '' });
+  const [formValues, setFormValues] = useState({
+    fullName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    companyName: '',
+    businessPhone: ''
+  });
+
+  const navigate = useNavigate();
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormValues({ ...formValues, [name]: value });
+  };
 
   const handleRegister = async (e: FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    // Simulated registration delay
-    setTimeout(() => {
+
+    try {
+      const response = await axios.post('/register', {
+        name: formValues.fullName,
+        email: formValues.email,
+        role: selectedRole,
+        password: formValues.password
+      });
+      setIsLoading(false);
+      localStorage.setItem('token', response.data.token);
+      navigate('/');
+
+      // Handle successful registration, e.g., store token, redirect, etc.
+    } catch (error) {
+      console.error(error);
       setIsLoading(false);
       setRegisterAttempt({
         error: true,
-        message: 'Registration service temporarily unavailable.'
+        message: 'Registration failed. Please try again.'
       });
-    }, 1000);
+    }
   };
 
   const roleCards = [
@@ -58,8 +87,8 @@ export default function RegisterPage() {
       </div>
 
       <div className="w-full max-w-4xl p-4 relative z-10">
-        <Link 
-          to="/" 
+        <Link
+          to="/"
           className="inline-flex items-center text-gray-400 hover:text-white mb-6 transition-colors"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
@@ -115,8 +144,11 @@ export default function RegisterPage() {
                     <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                     <input
                       type="text"
+                      name="fullName"
                       placeholder="Full Name"
                       required
+                      value={formValues.fullName}
+                      onChange={handleInputChange}
                       className="w-full pl-10 p-3 bg-slate-900/50 border border-slate-700 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-blue-500"
                     />
                   </div>
@@ -125,8 +157,11 @@ export default function RegisterPage() {
                     <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                     <input
                       type="email"
+                      name="email"
                       placeholder="Email"
                       required
+                      value={formValues.email}
+                      onChange={handleInputChange}
                       className="w-full pl-10 p-3 bg-slate-900/50 border border-slate-700 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-blue-500"
                     />
                   </div>
@@ -138,8 +173,11 @@ export default function RegisterPage() {
                         <Building2 className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                         <input
                           type="text"
+                          name="companyName"
                           placeholder="Company Name"
                           required
+                          value={formValues.companyName}
+                          onChange={handleInputChange}
                           className="w-full pl-10 p-3 bg-slate-900/50 border border-slate-700 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-blue-500"
                         />
                       </div>
@@ -147,8 +185,11 @@ export default function RegisterPage() {
                         <Phone className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                         <input
                           type="tel"
+                          name="businessPhone"
                           placeholder="Business Phone"
                           required
+                          value={formValues.businessPhone}
+                          onChange={handleInputChange}
                           className="w-full pl-10 p-3 bg-slate-900/50 border border-slate-700 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-blue-500"
                         />
                       </div>
@@ -160,8 +201,11 @@ export default function RegisterPage() {
                     <KeyRound className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                     <input
                       type={showPassword ? "text" : "password"}
+                      name="password"
                       placeholder="Password"
                       required
+                      value={formValues.password}
+                      onChange={handleInputChange}
                       className="w-full pl-10 pr-10 p-3 bg-slate-900/50 border border-slate-700 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-blue-500"
                     />
                     <button
@@ -181,8 +225,11 @@ export default function RegisterPage() {
                     <KeyRound className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                     <input
                       type={showConfirmPassword ? "text" : "password"}
+                      name="confirmPassword"
                       placeholder="Confirm Password"
                       required
+                      value={formValues.confirmPassword}
+                      onChange={handleInputChange}
                       className="w-full pl-10 pr-10 p-3 bg-slate-900/50 border border-slate-700 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-blue-500"
                     />
                     <button
@@ -201,8 +248,8 @@ export default function RegisterPage() {
                   {/* Driver Info Box */}
                   {selectedRole === 'driver' && (
                     <div className="bg-blue-900/20 border border-blue-800 text-blue-200 p-4 rounded-lg">
-                      <p className="text-sm">After registration, you'll be able to apply to sponsor companies. 
-                      Once a sponsor accepts your application, you can start earning and redeeming points for rewards.</p>
+                      <p className="text-sm">After registration, you'll be able to apply to sponsor companies.
+                        Once a sponsor accepts your application, you can start earning and redeeming points for rewards.</p>
                     </div>
                   )}
 

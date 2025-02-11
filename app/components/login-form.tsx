@@ -1,19 +1,16 @@
 import React, { useState } from 'react';
+import axios from '../api/axiosConfig';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-      
-      if (response.ok) {
+      const response = await axios.post('/login', { email, password });
+
+      if (response.status === 200) {
         window.location.href = '/dashboard';
       }
     } catch (error) {
