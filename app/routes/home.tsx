@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react';
 import { ArrowRight, Shield, Truck, Award, BarChart, Gift, Users, Menu, X, Info } from 'lucide-react';
 import { Link } from 'react-router-dom';
+<<<<<<< Updated upstream
 import { useAuth } from 'react-oidc-context';
+=======
+import { FileText } from "lucide-react";
+>>>>>>> Stashed changes
 
 export default function Home() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -154,6 +158,18 @@ export default function Home() {
             Sign Up <ArrowRight className="ml-2 h-5 w-5" />
           </Link>
 
+        </div>
+        {/* Submit Application Section */}
+        <div className="mt-12 text-center">
+          <h2 className="text-3xl font-bold text-white">Join Our Program</h2>
+          <p className="text-gray-300 mt-2">Apply now and start earning rewards for good driving.</p>
+          <Link
+            to="/apply"
+            className="mt-4 px-8 py-4 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all duration-300 flex items-center justify-center"
+          >
+            <FileText className="mr-2 h-5 w-5" />
+            Submit Application
+          </Link>
         </div>
       </div>
     </main>
