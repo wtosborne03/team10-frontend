@@ -2,8 +2,7 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft, Database, AlertCircle } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-// Define the API base URL
-const API_BASE_URL = 'http://localhost:3001'; // Make sure this matches your backend port
+const API_BASE_URL = 'http://localhost:3001';
 
 interface DatabaseStats {
   about: {

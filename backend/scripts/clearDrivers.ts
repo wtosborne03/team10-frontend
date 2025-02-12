@@ -34,7 +34,6 @@ async function clearDrivers() {
       }
     });
 
-    // Delete driver profiles
     await prisma.driver.deleteMany({
       where: {
         user: {
@@ -43,7 +42,6 @@ async function clearDrivers() {
       }
     });
 
-    // Finally, delete the users themselves
     await prisma.user.deleteMany({
       where: {
         role: 'driver'
