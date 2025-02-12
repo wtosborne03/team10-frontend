@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, KeyRound, Mail, AlertTriangle, ArrowLeft, User, Building2, Phone, Truck, Award, Shield } from 'lucide-react';
 import axios from '../api/axiosConfig';
 
+
+
 interface FormEvent extends React.FormEvent<HTMLFormElement> {
   preventDefault(): void;
 }
@@ -24,12 +26,17 @@ export default function RegisterPage() {
     businessPhone: ''
   });
 
+
+
   const navigate = useNavigate();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormValues({ ...formValues, [name]: value });
   };
+
+
+
 
   const handleRegister = async (e: FormEvent) => {
     e.preventDefault();
@@ -244,6 +251,7 @@ export default function RegisterPage() {
                       )}
                     </button>
                   </div>
+
 
                   {/* Driver Info Box */}
                   {selectedRole === 'driver' && (
