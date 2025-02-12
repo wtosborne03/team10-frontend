@@ -1,14 +1,20 @@
 import { useState, useEffect } from 'react';
 import { ArrowRight, Shield, Truck, Award, BarChart, Gift, Users, Menu, X, Info } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useAuth } from 'react-oidc-context';
 
 export default function Home() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const auth = useAuth();
 
   useEffect(() => {
     setIsLoaded(true);
   }, []);
+
+  const signIn = async () => {
+    await auth.signin
+  }
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex flex-col items-center justify-start p-4 relative overflow-hidden">
@@ -135,18 +141,19 @@ export default function Home() {
 
         {/* CTA Section */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center pt-12 pb-8">
-          <Link
-            to="/login"
+          <button
+            onClick={ }
             className="px-8 py-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-blue-500/50 flex items-center justify-center"
           >
             Sign In <ArrowRight className="ml-2 h-5 w-5" />
-          </Link>
+          </button>
           <Link
             to="/register"
-            className="px-8 py-4 bg-transparent border-2 border-blue-400 text-blue-400 rounded-lg hover:bg-blue-400/10 transition-all duration-300 transform hover:scale-105 flex items-center justify-center"
+            className="px-8 py-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-blue-500/50 flex items-center justify-center"
           >
-            Create Account <ArrowRight className="ml-2 h-5 w-5" />
+            Sign Up <ArrowRight className="ml-2 h-5 w-5" />
           </Link>
+
         </div>
       </div>
     </main>

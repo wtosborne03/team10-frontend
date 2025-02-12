@@ -2,9 +2,15 @@ import { PrismaClient, type Prisma } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Request, Response } from 'express';
+import { CognitoIdentityServiceProvider } from 'aws-sdk';
+
 
 const prisma = new PrismaClient();
-const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
+export const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
+
+const cognito = new CognitoIdentityServiceProvider();
+const USER_POOL_ID = process.env.COGNITO_USER_POOL_ID;
+const CLIENT_ID = process.env.COGNITO_CLIENT_ID;
 
 
 interface AuthRequest extends Request {
@@ -17,38 +23,33 @@ interface AuthRequest extends Request {
 }
 
 export async function register(req: AuthRequest, res: Response) {
+  const { name, email, password, role } = req.body;
+  const params: CognitoIdentityServiceProvider.Types.SignUpRequest = {
+    ClientId: CLIENT_ID!,
+    Username: email,
+    Password: password,
+    UserAttributes: [
+      { Name: 'name', Value: name },
+      { Name: 'email', Value: email },
+    ],
+  };
+
   try {
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const signUpResponse = await cognito.signUp(params).promise();
+    const cognitoUserId = signUpResponse.UserSub;
+
     const user = await prisma.user.create({
       data: {
-        name: req.body.name,
-        email: req.body.email,
-        role: req.body.role || 'driver',
-        passwordHash: hashedPassword,
-      } satisfies Prisma.UserCreateInput,
+        id: cognitoUserId,
+        name,
+        email,
+        role,
+      }
     });
-    const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '24h' });
-    res.status(201).json({ success: true, token });
+
+    res.status(201).json({ success: true, message: 'User registered successfully' });
   } catch (error) {
     console.error('Error creating user:', error);
     res.status(400).json({ error: 'Registration failed' });
-  }
-}
-
-export async function login(req: AuthRequest, res: Response) {
-  try {
-    const user = await prisma.user.findUnique({
-      where: { email: req.body.email },
-    });
-    if (!user || !(await bcrypt.compare(req.body.password, user.passwordHash))) {
-      console.error('Invalid email or password');
-      res.status(401).json({ error: 'Invalid email or password' });
-      return;
-    }
-    const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '24h' });
-    res.status(200).json({ success: true, token });
-  } catch (error) {
-    console.error('Error logging in:', error);
-    res.status(400).json({ error: 'Login failed' });
   }
 }

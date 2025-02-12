@@ -3,7 +3,7 @@ import express from 'express';
 import * as bcrypt from 'bcrypt';
 import { PrismaClient } from '@prisma/client';
 import cors from 'cors';
-import { register, login } from './api/auth'; // Import the auth functions
+import { register } from './api/auth'; // Import the auth functions
 
 const prisma = new PrismaClient();
 const app = express();
@@ -27,26 +27,8 @@ app.get('/api/users', async (req, res) => {
 });
 
 app.post('/api/register', register);
-app.post('/api/login', login);
 
-app.post('/api/users', async (req, res) => {
-  try {
-    const { name, email, role = 'driver', password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await prisma.user.create({
-      data: {
-        name,
-        email,
-        role: role as string,
-        passwordHash: hashedPassword
-      }
-    });
-    res.json(user);
-  } catch (error) {
-    console.error('Error creating user:', error);
-    res.status(500).json({ error: 'Failed to create user' });
-  }
-});
+
 
 // Delete a user
 app.delete('/api/users/:id', async (req, res) => {
